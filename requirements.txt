@@ -1,5 +1,4 @@
-# --- Sovereign Executioner Dependencies سيدي ---
-nodriver==0.36.1
+undetected-chromedriver==3.5.5
+selenium==4.15.2
 telethon==1.36.0
 requests==2.31.0
-colorama==0.4.6

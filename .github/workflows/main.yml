@@ -1,33 +1,51 @@
-name: SOVEREIGN EXECUTIONER REBORN
+name: UC-SOVEREIGN CLOUD ENGINE V5.2
 
 on:
   schedule:
-    - cron: '*/30 * * * *'
-  workflow_dispatch:
+    - cron: '*/30 * * * *' # الغزو ينطلق تلقائياً كل 30 دقيقة سيدي
+  workflow_dispatch: # يمنحك القدرة على بدء الهجوم يدوياً في أي وقت
 
 jobs:
   conquer:
     runs-on: ubuntu-latest
+    
+    # تحديد المهلة الزمنية لمنع تعليق المهمة سيدي
+    timeout-minutes: 25 
+
     steps:
       - name: 🛡️ Checkout Repository
         uses: actions/checkout@v3
 
-      - name: 🐍 Setup Python
+      - name: 🐍 Setup Python 3.10
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
+          cache: 'pip' # تسريع عمليات التثبيت اللاحقة سيدي
 
-      - name: 🌐 Install Chrome & Dependencies
+      - name: 🌐 Install Google Chrome Stable
         run: |
           sudo apt-get update
-          sudo apt-get install -y google-chrome-stable libnss3 libatk-bridge2.0-0 libgtk-3-0 libgbm-dev
+          sudo apt-get install -y wget fonts-liberation libappindicator3-1 libasound2 libatk-bridge2.0-0 libnspr4 libnss3 libx11-xcb1 libxtst6 xdg-utils
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo dpkg -i google-chrome-stable_current_amd64.deb
+          sudo apt-get install -f
 
-      - name: 📦 Install Requirements
+      - name: 📦 Install Python Royal Dependencies
         run: |
-          pip install nodriver telethon requests
+          python -m pip install --upgrade pip
+          # التثبيت المباشر لضمان التوافق سيدي
+          pip install undetected-chromedriver==3.5.5 selenium==4.15.2 telethon requests
 
-      - name: ⚔️ Launch Mission
+      - name: ⚔️ Launch UC Sovereign Mission
         env:
+          # سحب الأسرار الملكية من إعدادات المستودع سيدي
           SB_URL: ${{ secrets.SB_URL }}
           SB_KEY: ${{ secrets.SB_KEY }}
+          # إضافة متغير لتعريف بيئة التشغيل بأنها سحابية
+          PYTHONUNBUFFERED: 1
         run: python Cloud_Engine.py
+
+      - name: 📋 Report Status
+        if: always()
+        run: |
+          echo "تم الانتهاء من محاولة الغزو سيدي. الحالة: ${{ job.status }}"
