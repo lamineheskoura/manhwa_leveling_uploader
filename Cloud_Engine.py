@@ -54,6 +54,8 @@ class CloudArchitect:
 
 # --- Professional Global Commenting Protocol: UC-SOVEREIGN V5.6 (GATE-CRACKER) سيدي ---
 
+# --- Professional Global Commenting Protocol: UC-SOVEREIGN V5.7 (PRECISION STRIKE) سيدي ---
+
 async def execute_mission(task, bot_index, architect):
     token = BOT_TOKENS[bot_index]
     client = TelegramClient(MemorySession(), API_ID, API_HASH)
@@ -62,47 +64,60 @@ async def execute_mission(task, bot_index, architect):
     try:
         await client.start(bot_token=token)
         driver = uc.Chrome(options=architect.options)
+        driver.set_window_size(1920, 1080) # توحيد الشاشة لتحديد الإحداثيات سيدي
         
-        print(f"🌐 الفارس {bot_index+1}: يقف أمام بوابة التحقق... {task['source_url']}")
+        print(f"🌐 الفارس {bot_index+1}: يقف أمام البوابة الحصينة...")
         driver.get(task['source_url'])
-        
-        # 1. نظام كسر بوابة الروبوت سيدي
-        await asyncio.sleep(8) # انتظار ظهور البوابة
+        await asyncio.sleep(10)
+
+        # --- ⚡ عملية التسلل لمركز البوابة سيدي ---
         try:
-            # البحث عن iframe الخاص بـ Cloudflare أو الزر مباشرة
-            # نستخدم نظام النقر الإحداثي سيدي لتجنب كشف البوت
-            print(f"⚡ الفارس {bot_index+1}: يحاول اختراق بوابة 'أنا لست روبوت'...")
+            # البحث عن إطار Cloudflare Turnstile
+            # غالباً ما يكون له اسم يبدأ بـ cf-chl-widget سيدي
+            gate_iframes = driver.find_elements(By.TAG_NAME, "iframe")
+            for frame in gate_iframes:
+                if "cloudflare" in frame.get_attribute("src") or "turnstile" in frame.get_attribute("src"):
+                    print(f"🎯 تم رصد ثغرة البوابة (Iframe)، جاري محاكاة النقر البشري...")
+                    
+                    # الحصول على موقع الإطار على الشاشة سيدي
+                    location = frame.location
+                    size = frame.size
+                    
+                    # حساب نقطة النقر في منتصف الإطار تماماً
+                    center_x = location['x'] + (size['width'] / 2)
+                    center_y = location['y'] + (size['height'] / 2)
+                    
+                    # تنفيذ النقر الدقيق سيدي
+                    from selenium.webdriver.common.action_chains import ActionChains
+                    actions = ActionChains(driver)
+                    actions.move_by_offset(center_x, center_y).click().perform()
+                    
+                    print(f"⚡ تم توجيه ضربة دقيقة للإحداثيات ({center_x}, {center_y})")
+                    break
             
-            # محاولة النقر في منتصف الشاشة تقريباً حيث يظهر التحدي عادةً
-            from selenium.webdriver.common.action_chains import ActionChains
-            actions = ActionChains(driver)
-            actions.move_by_offset(200, 300).click().perform() # نقرة عمياء ذكية
-            
-            # ننتظر 10 ثوانٍ إضافية ليرى الموقع أننا "بشر" ويفتح الصور
-            await asyncio.sleep(12) 
-        except:
-            print("⚠️ البوابة قد لا تكون موجودة أو مخفية، نتابع الهجوم...")
+            # انتظار المعالجة بعد النقر سيدي
+            await asyncio.sleep(15) 
+        except Exception as e:
+            print(f"⚠️ فشل نظام التسلل الدقيق: {e}")
 
-        # 2. التمرير لتنشيط الصور سيدي
-        driver.execute_script("window.scrollTo(0, 1000);")
-        await asyncio.sleep(3)
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        await asyncio.sleep(5)
-
-        # 3. سحب الصور الآن (بعد أن فتح الموقع الحماية سيدي)
+        # --- 📜 محاولة سحب الغنائم بعد الاختراق ---
+        # سنقوم بتحديث الصفحة داخلياً (Scroll) لتنشيط المحتوى سيدي
+        driver.execute_script("window.scrollBy(0, 500);")
+        await asyncio.sleep(2)
+        
         links = architect.extract_precise_images(driver)
         
         if links:
-            print(f"🔥 تم الاختراق! وجدنا {len(links)} صورة خلف البوابة سيدي.")
-            # ... (بقية كود الرفع كما هو سيدي)
+            print(f"🔥 نصر مؤزر! اخترقنا البوابة ووجدنا {len(links)} صورة سيدي.")
+            # (نفس كود الرفع كما هو سيدي)
+            # ...
         else:
-            # إذا فشلنا، سنحفظ صفحة الـ HTML لنعرف نوع البوابة الجديد سيدي
-            with open(f"failed_gate_{bot_index}.html", "w", encoding="utf-8") as f:
+            print(f"❌ الفارس {bot_index+1}: الحصن لا يزال صامداً. جاري سحب تقرير الـ HTML...")
+            with open(f"failed_capture_{bot_index}.html", "w", encoding="utf-8") as f:
                 f.write(driver.page_source)
-            print(f"❌ الفارس {bot_index+1}: البوابة لا تزال مغلقة. تم حفظ الكود للتحليل.")
 
     except Exception as e:
-        print(f"❌ خطأ: {e}")
+        print(f"❌ سيدي، واجهنا عطل فني: {e}")
     finally:
         if driver: driver.quit()
         await client.disconnect()
