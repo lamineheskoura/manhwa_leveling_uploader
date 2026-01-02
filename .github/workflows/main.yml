@@ -1,9 +1,9 @@
 name: ROYAL GHOST ENGINE V26.0
 
 on:
-  workflow_dispatch: # للتشغيل اليدوي بضغطة زر سيدي
+  workflow_dispatch: # للتشغيل اليدوي سيدي القائد
   schedule:
-    - cron: '0 */2 * * *' # تشغيل تلقائي كل ساعتين (اختياري)
+    - cron: '0 */2 * * *' # تشغيل تلقائي كل ساعتين لضمان استمرار الغزو
 
 jobs:
   execution:
@@ -21,14 +21,15 @@ jobs:
       - name: 📦 Install Royal Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install DrissionPage telethon requests
+          # إضافة المكتبات اللازمة بدقة سيدي
+          pip install DrissionPage telethon requests colorama tqdm
 
       - name: ⚔️ Start Royal Ghost Mission
         env:
-          # سحب المفاتيح السرية من إعدادات GitHub سيدي
+          # التأكد من مطابقة الأسماء مع ما في الـ Secrets سيدي
           NGROK_URL: ${{ secrets.NGROK_URL }}
           SB_URL: ${{ secrets.SB_URL }}
           SB_KEY: ${{ secrets.SB_KEY }}
-          # تأكد من إضافة BOT_TOKENS في Secrets إذا أردت تغييرها مستقبلاً
           BOT_TOKENS: ${{ secrets.BOT_TOKENS }} 
-        run: python bot_engine.py
+        # التعديل الجوهري: استخدام الاسم الذي حددته أنت سيدي
+        run: python Cloud_Engine.py
