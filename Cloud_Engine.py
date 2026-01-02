@@ -33,23 +33,20 @@ HEADERS = {"apikey": SB_KEY, "Authorization": f"Bearer {SB_KEY}", "Content-Type"
     # --- تصحيح بروتوكول الاتصال سيدي ---
 class GhostArchitect:
     def __init__(self):
-        self.co = ChromiumOptions()
-        # تنظيف الرابط سيدي من أي زوائد
+        # تنظيف العنوان وإضافة المنفذ يدوياً سيدي
         addr = BRIDGE_URL.replace("https://", "").replace("http://", "").strip()
+        full_address = f"{addr}:443"
         
-        # أهم خطوة: تحديد المنفذ والعنوان بشكل منفصل
-        self.co.set_browser_path("") # نتركه فارغاً لأننا نتصل بمتصفح بعيد
+        self.co = ChromiumOptions()
+        # نلغي أي إعدادات محلية لضمان عدم العودة لـ 127.0.0.1
         self.co.set_argument(f'--remote-debugging-address={addr}')
-        self.co.set_argument('--no-sandbox')
         
         try:
-            # محاولة الربط باستخدام العنوان المباشر سيدي
-            # قمت بإضافة address هنا لضمان عدم العودة لـ 127.0.0.1
-            self.page = ChromiumPage(addr) 
-            print(f"✅ تم اختراق Brave بنجاح سيدي عبر النفق: {addr}")
+            # الربط باستخدام النص المباشر سيدي (IP:PORT)
+            self.page = ChromiumPage(addr_or_opts=full_address) 
+            print(f"✅ تم الاختراق السحابي بنجاح! العنوان: {full_address}")
         except Exception as e:
-            print(f"❌ فشل الجسر سيدي. العنوان المستخدم: {addr}")
-            print(f"خطأ النظام: {e}")
+            print(f"❌ فشل الجسر العظيم. الخطأ: {e}")
             self.page = None
             
     def extract_precise_images(self, url):
