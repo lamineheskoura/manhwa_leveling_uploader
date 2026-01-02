@@ -46,20 +46,39 @@ class ManhwaArchitect:
         self.co.set_argument('--headless')
         self.co.set_argument('--no-sandbox')
         self.co.set_argument('--disable-gpu')
-        self.co.set_user_agent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
+        self.co.set_argument('--incognito') # 🕵️ وضع التخفي سيدي
+        self.co.set_user_agent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36')
         self.co.set_argument('--disable-blink-features=AutomationControlled')
         self.page = ChromiumPage(self.co)
 
-    def bypass_cloudflare(self):
-        """تجاوز درع حماية المواقع سيدي"""
-        for i in range(1, 11):
+    def bypass_cloudflare(self, url):
+        """بروتوكول الاختراق المتقدم سيدي"""
+        print(f"📡 محاولة كسر التشفير للرابط...")
+        
+        # الخطوة 1: محاولة زيارة الدومين الرئيسي أولاً لزرع الكوكيز
+        domain = "/".join(url.split("/")[:3])
+        self.page.get(domain)
+        time.sleep(3)
+        
+        # الخطوة 2: الدخول للرابط المستهدف
+        self.page.get(url)
+        
+        for i in range(1, 15): # زيادة المهلة لـ 45 ثانية
             title = self.page.title
-            if "Just a moment" not in title and "Cloudflare" not in title:
-                print(f"✅ تم اختراق الحماية سيدي: {title}")
+            # التحقق من وجود عناصر المانجا فعلياً وليس فقط العنوان
+            if self.page.ele('.reading-content') or self.page.ele('tag:img'):
+                print(f"✅ تم اختراق الدرع بنجاح سيدي في المحاولة {i}!")
                 return True
-            print(f"⏳ محاولة تجاوز الدرع {i}...")
+            
+            # محاولة النقر في وسط الشاشة سيدي ربما يوجد زر "إكمال" مخفي
+            try: self.page.actions.click()
+            except: pass
+            
+            print(f"⏳ الدرع لا يزال صامداً (المحاولة {i})... العنوان الحالي: {title}")
             time.sleep(3)
         return False
+
+
 
     def extract_images(self):
         """استخراج الصور بدقة المهندس سيدي"""
