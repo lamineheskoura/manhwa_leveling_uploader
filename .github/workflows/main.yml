@@ -20,10 +20,11 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: 🌐 تثبيت متصفح Google Chrome
+      - name: 🌐 تثبيت متصفح Google Chrome والشاشة الوهمية
         run: |
           sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
+          # تثبيت Xvfb (الشاشة الوهمية) سيدي
+          sudo apt-get install -y google-chrome-stable xvfb
 
       - name: 📦 تثبيت المكتبات وتصفية تعارض البروكسي
         run: |
