@@ -31,7 +31,16 @@ class SovereignScout:
     async def get_links(self, url):
         try:
             # بدء المتصفح في وضع مخفي تماماً داخل GitHub سيدي
-            browser = await uc.start(headless=True, browser_args=['--no-sandbox', '--disable-setuid-sandbox'])
+            # سيدي، أضفنا --no-sandbox و --disable-dev-shm-usage لتجاوز قيود السيرفر
+            browser = await uc.start(
+                headless=True, 
+                browser_args=[
+                    '--no-sandbox', 
+                    '--disable-setuid-sandbox', 
+                    '--disable-dev-shm-usage', # لمنع انهيار الذاكرة في GitHub
+                    '--disable-gpu'
+                ]
+            )
             page = await browser.get(url)
             
             # سحر الانتظار: يتخطى الكلود فاير تلقائياً سيدي
