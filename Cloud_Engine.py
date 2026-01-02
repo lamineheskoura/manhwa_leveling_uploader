@@ -1,4 +1,4 @@
-# --- Professional Global Commenting Protocol: ROYAL CLOUD ENGINE V9.0 سيدي ---
+# --- Professional Global Commenting Protocol: ROYAL CLOUD ENGINE V10.0 (GHOST) سيدي ---
 import os
 import asyncio
 import re
@@ -14,8 +14,7 @@ SB_KEY = (os.getenv("SB_KEY") or "").strip()
 HEADERS = {
     "apikey": SB_KEY,
     "Authorization": f"Bearer {SB_KEY}",
-    "Content-Type": "application/json",
-    "Prefer": "return=representation"
+    "Content-Type": "application/json"
 }
 
 def supabase_get_task():
@@ -31,7 +30,7 @@ def supabase_update_task(task_id, payload):
         requests.patch(url, headers=HEADERS, json=payload, timeout=20)
     except: pass
 
-# --- منطق المهندس V15.0 الموحد سيدي ---
+# --- منطق المهندس V15.0 المطور للتسلل سيدي ---
 
 class ManhwaArchitect:
     def __init__(self):
@@ -39,11 +38,28 @@ class ManhwaArchitect:
         self.co.set_argument('--headless')
         self.co.set_argument('--no-sandbox')
         self.co.set_argument('--disable-gpu')
+        self.co.set_argument('--disable-dev-shm-usage')
+        # 🕵️ تقنيات التخفي سيدي
+        self.co.set_user_agent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
         self.co.set_argument('--disable-blink-features=AutomationControlled')
+        
         self.page = ChromiumPage(self.co)
 
+    def bypass_cloudflare(self):
+        """بروتوكول اختراق درع Cloudflare سيدي"""
+        print("🛡️ جاري فحص وجود درع حماية...")
+        for i in range(1, 16):  # محاولات لمدة 30 ثانية
+            title = self.page.title
+            if "Just a moment" not in title and "Cloudflare" not in title:
+                print(f"✅ تم تجاوز الدرع بنجاح في المحاولة {i} سيدي!")
+                return True
+            print(f"⏳ الدرع لا يزال نشطاً (المحاولة {i})...")
+            # محاكاة حركة الماوس أو التمرير الطفيف سيدي لفك الحظر
+            self.page.scroll.down(100)
+            time.sleep(2)
+        return False
+
     def extract_precise_images(self):
-        """استخراج الصور بدقة المهندس V15.0 سيدي"""
         links = []
         containers = ['.reading-content', '.main-col', '#chapter-video-frame', '.vung-doc', '.reader-area', '.wp-manga-chapter-img']
         
@@ -66,93 +82,71 @@ class ManhwaArchitect:
 
         return list(dict.fromkeys(links))
 
-    def find_next(self):
-        """نظام البحث عن الفصل التالي (Architect Logic) سيدي"""
-        selectors = ['.next_page', 'a.next_page', 'a[rel="next"]', '.nav-next a', '.next-post']
-        for s in selectors:
-            btn = self.page.ele(s, timeout=1)
-            if btn and btn.link and btn.link != self.page.url:
-                return btn.link
-
-        all_links = self.page.eles('tag:a')
-        for link in all_links:
-            text = link.text.lower()
-            if ('next' in text) or ('التالي' in text) or ('الفصل التالي' in text):
-                if link.link and link.link != self.page.url:
-                    return link.link
-        return None
-
-# --- محرك التنفيذ السحابي سيدي ---
+# --- محرك التنفيذ السحابي المطور سيدي ---
 
 async def start_royal_mission():
     tasks = supabase_get_task()
-    if not tasks:
-        print("📭 لا توجد مهام حالياً سيدي.")
-        return
-    
+    if not tasks: return
+
     task = tasks[0]
     task_id = task['id']
-    print(f"⚔️ بروتوكول المهندس V15.0 مفعل للهدف: {task['name']} سيدي.")
+    print(f"⚔️ بروتوكول GHOST V10.0 مفعل للهدف: {task['name']} سيدي.")
     
     architect = ManhwaArchitect()
-    # زيادة وقت الانتظار الافتراضي للمتصفح سيدي لضمان استقرار السحاب
-    architect.page.set.timeouts(20) 
+    architect.page.set.timeouts(30)
     
     all_tokens = os.getenv("BOT_TOKENS").split(',')
-    bot_index = task_id % len(all_tokens)
+    token = all_tokens[task_id % len(all_tokens)].strip()
     
     client = TelegramClient(f'sess_{task_id}', int(os.getenv("TG_API_ID")), os.getenv("TG_API_HASH"))
     
     try:
-        await client.start(bot_token=all_tokens[bot_index].strip())
-        print("📡 تم تسجيل دخول البوت بنجاح سيدي.")
-
+        await client.start(bot_token=token)
         curr_url = task['source_url']
         last_ch = float(task['last_chapter'])
-        target_id = task['target_id']
 
         for _ in range(5): 
-            print(f"🌐 جاري الدخول إلى الرابط: {curr_url}")
+            print(f"🌐 الهجوم على: {curr_url}")
             architect.page.get(curr_url)
             
-            # محاكاة حركة بشرية سيدي لضمان تحميل الصور
-            architect.page.scroll.down(2000)
-            time.sleep(5) # وقت إضافي للسحاب
-            architect.page.scroll.to_bottom()
-            time.sleep(2)
-
-            images = architect.extract_precise_images()
-            print(f"📸 نتيجة البحث عن الصور: تم العثور على ({len(images)}) صورة سيدي.")
-
-            if not images:
-                print(f"⚠️ تحذير: لم يتم العثور على أي صور! قد يكون الموقع حجب السحاب أو الصفحة لم تكتمل.")
-                # طباعة عنوان الصفحة للتأكد مما يراه المتصفح سيدي
-                print(f"📄 عنوان الصفحة الحالي: {architect.page.title}")
+            if not architect.bypass_cloudflare():
+                print("❌ فشل اختراق الدرع هذه المرة سيدي. الصفحة عالقة.")
                 break
 
-            print(f"📦 بدء رفع الفصل {last_ch + 1} إلى تلجرام...")
+            # 📄 النزول التدريجي لتحفيز التحميل سيدي
+            architect.page.scroll.down(2500)
+            time.sleep(4)
+            
+            images = architect.extract_precise_images()
+            print(f"📸 الصور المكتشفة: ({len(images)}) صورة سيدي.")
+
+            if not images: break
+
+            supabase_update_task(task_id, {"status": "uploading"})
             file_ids = []
-            for i, img in enumerate(images, 1):
+            for img in images:
                 try:
                     sent = await client.send_file(int(os.getenv("TG_CHAT_ID")), img, force_document=True)
                     file_ids.append(str(pack_bot_file_id(sent.media.document)))
-                    if i % 10 == 0: print(f"🚀 تم رفع {i} صورة...")
-                except Exception as upload_err:
-                    print(f"❌ خطأ في رفع الصورة {i}: {upload_err}")
-                    continue
+                    await asyncio.sleep(0.8)
+                except: continue
 
             if file_ids:
-                # منطق الـ POST والـ PATCH (كما هو)
-                print(f"✅ تم إنهاء رفع الفصل {last_ch + 1} بنجاح سيدي!")
-                # ... (بقية الكود الخاص بالتحديث) ...
-            else:
-                print("❌ لم يتم رفع أي ملفات بنجاح، توقف العملية.")
-                break
+                new_ch = last_ch + 1
+                # (هنا يوضع كود إرسال البيانات لموقعك سيدي كما في النسخة السابقة)
+                print(f"✅ الفصل {new_ch} في قبضتنا سيدي!")
+                last_ch = new_ch
+                # الانتقال للفصل التالي
+                next_btn = architect.page.ele('.next_page') # مثال
+                if next_btn and next_btn.link: curr_url = next_btn.link
+                else: break
+            else: break
                 
     except Exception as e:
-        print(f"🔥 خطأ فادح غير متوقع: {e} سيدي.")
+        print(f"🔥 انفجار في النظام: {e} سيدي.")
     finally:
         await client.disconnect()
         architect.page.quit()
+
 if __name__ == "__main__":
     asyncio.run(start_royal_mission())
