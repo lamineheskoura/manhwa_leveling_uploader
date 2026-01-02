@@ -33,28 +33,24 @@ HEADERS = {"apikey": SB_KEY, "Authorization": f"Bearer {SB_KEY}", "Content-Type"
     # --- تصحيح بروتوكول الاتصال سيدي ---
 class GhostArchitect:
     def __init__(self):
-        # سيدي، سنقوم بتنظيف الرابط تماماً
-        addr = BRIDGE_URL.replace("https://", "").replace("http://", "").strip()
+        # سيدي، سنضيف المنفذ 443 قسراً لأن ngrok المشفر يستخدمه
+        raw_addr = BRIDGE_URL.replace("https://", "").replace("http://", "").strip()
+        # إضافة المنفذ هو المفتاح لحل خطأ "parameter value is incorrect"
+        full_addr = f"{raw_addr}:443"
         
         self.co = ChromiumOptions()
-        # إخبار الكود أن المتصفح خلف هذا النفق تحديداً
-        self.co.set_argument(f'--remote-debugging-address={addr}')
+        # نحدد العنوان البعيد في الإعدادات أيضاً سيدي
+        self.co.set_argument(f'--remote-debugging-address={raw_addr}')
         self.co.set_argument('--no-sandbox')
         
         try:
-            # المحاولة الأولى: الربط المباشر (الأكثر استقراراً)
-            print(f"📡 محاولة الربط بالجسر: {addr}")
-            self.page = ChromiumPage(addr) 
-            print(f"✅ تم الاختراق السحابي بنجاح سيدي!")
-        except Exception as e1:
-            try:
-                # المحاولة الثانية: إضافة المنفذ المشفر
-                self.page = ChromiumPage(f"{addr}:443")
-                print(f"✅ تم الاتصال عبر المنفذ 443 سيدي.")
-            except Exception as e2:
-                print(f"❌ فشل الجسر. المتصفح في منزلك لا يستجيب.")
-                print(f"DEBUG: {e1}")
-                self.page = None
+            print(f"📡 محاولة اقتحام الجسر: {full_addr}")
+            # نمرر العنوان مع المنفذ ليرضى نظام DrissionPage سيدي
+            self.page = ChromiumPage(addr_or_opts=full_address) 
+            print(f"✅ تم الاختراق بنجاح! المتصفح الآن تحت سيطرتك سيدي.")
+        except Exception as e:
+            print(f"❌ فشل الجسر النهائي. الخطأ: {e}")
+            self.page = None
             
     def extract_precise_images(self, url):
         if not self.page: return []
