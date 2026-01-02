@@ -30,19 +30,26 @@ SB_KEY = (os.getenv("SB_KEY") or "").strip()
 HEADERS = {"apikey": SB_KEY, "Authorization": f"Bearer {SB_KEY}", "Content-Type": "application/json"}
 
 # --- 1. محرك الزحف الشبحي (The Ghost Architect) ---
+    # --- تصحيح بروتوكول الاتصال سيدي ---
 class GhostArchitect:
     def __init__(self):
         self.co = ChromiumOptions()
-        # الربط بمتصفح Brave في منزلك سيدي عبر النفق
-        addr = BRIDGE_URL.replace("https://", "").replace("http://", "")
-        self.co.set_argument(f'--remote-debugging-address={addr}')
+        
+        # استخراج النطاق فقط من الرابط سيدي (حذف https://)
+        clean_addr = BRIDGE_URL.replace("https://", "").replace("http://", "").strip()
+        
+        # إخبار الكود أن المتصفح موجود خلف هذا النفق
+        self.co.set_argument(f'--remote-debugging-address={clean_addr}')
+        self.co.set_argument('--no-sandbox')
+        self.co.set_argument('--disable-gpu')
+        
         try:
+            # محاولة الاتصال بالمتصفح البعيد سيدي
             self.page = ChromiumPage(self.co)
-            print("✅ تم اختراق Brave والربط بالجسر بنجاح سيدي!")
+            print(f"✅ تم اختراق Brave عبر النفق: {clean_addr}")
         except Exception as e:
-            print(f"❌ فشل الجسر: تأكد من تشغيل Ngrok و Brave بوضع التصحيح. {e}")
+            print(f"❌ فشل الجسر: تأكد من تشغيل Ngrok و Brave. الخطأ: {e}")
             self.page = None
-
     def extract_precise_images(self, url):
         if not self.page: return []
         self.page.get(url)
