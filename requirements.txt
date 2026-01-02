@@ -1,11 +1,14 @@
 # --- Professional Global Commenting Protocol: Royal Requirements v8.6 [Clean Build] سيدي ---
+# --- Professional Global Commenting Protocol: ROYAL REQUIREMENTS V8.6 سيدي ---
 
-# مكتبات التعامل مع الويب وتجاوز الحماية
+# المحرك الأساسي لتجاوز الحماية (الكروم)
 DrissionPage==4.0.5.5
+
+# ناقل البيانات الرسمي (بديل سوبابيز) - ضروري جداً سيدي
 requests==2.31.0
 
-# مكتبات التعامل مع تليجرام وقاعدة البيانات
+# مكتبة الاتصال بتليجرام
 telethon==1.34.0
-supabase==2.3.0
 
-# ملاحظة سيدي: تم إزالة asyncio لأنها مدمجة في النظام تلقائياً
+# سنبقي على هذه المكتبة احتياطاً فقط سيدي
+python-dotenv==1.0.1
