@@ -1,14 +1,12 @@
-# --- Professional Global Commenting Protocol: ROYAL CLOUD ENGINE V8.9 سيدي ---
+# --- Professional Global Commenting Protocol: ROYAL CLOUD ENGINE V9.0 سيدي ---
 import os
 import asyncio
 import re
 import requests
 import time
-import random
 from DrissionPage import ChromiumPage, ChromiumOptions
 from telethon import TelegramClient
 from telethon.utils import pack_bot_file_id
-from telethon.errors import FloodWaitError
 
 # 🔐 إعدادات الاتصال المباشر سيدي
 SB_URL = (os.getenv("SB_URL") or "").strip().rstrip('/')
@@ -33,9 +31,9 @@ def supabase_update_task(task_id, payload):
         requests.patch(url, headers=HEADERS, json=payload, timeout=20)
     except: pass
 
-# --- المحرك المطور بمنطق المهندس سيدي ---
+# --- منطق المهندس V15.0 الموحد سيدي ---
 
-class RoyalScraper:
+class ManhwaArchitect:
     def __init__(self):
         self.co = ChromiumOptions()
         self.co.set_argument('--headless')
@@ -45,9 +43,8 @@ class RoyalScraper:
         self.page = ChromiumPage(self.co)
 
     def extract_precise_images(self):
-        """استخراج الصور بدقة المهندس سيدي"""
+        """استخراج الصور بدقة المهندس V15.0 سيدي"""
         links = []
-        # قائمة الحاويات الشهيرة في مواقع المانهوا سيدي
         containers = ['.reading-content', '.main-col', '#chapter-video-frame', '.vung-doc', '.reader-area', '.wp-manga-chapter-img']
         
         target_container = None
@@ -63,43 +60,29 @@ class RoyalScraper:
                 if src and not any(x in src.lower() for x in ['logo', 'banner', 'avatar', 'icon']):
                     links.append(src)
         
-        # بروتوكول الطوارئ: البحث في كامل الـ HTML سيدي
         if not links:
             all_html_links = re.findall(r'https?://[^\s"\'<>]+?\.(?:webp|jpg|png|jpeg)', self.page.html)
             links = [l for l in all_html_links if not any(x in l.lower() for x in ['logo', 'icon', 'theme', 'avatar'])]
 
         return list(dict.fromkeys(links))
 
-    def get_data(self, url):
-        try:
-            self.page.get(url)
-            self.page.scroll.to_bottom()
-            time.sleep(2)
-            
-            valid_links = self.extract_precise_images()
-            
-            # إيجاد الفصل التالي سيدي
-            next_url = None
-            selectors = ['.next_page', 'a.next_page', 'a[rel="next"]', '.nav-next a', '.next-post', '.ch-next-btn']
-            for s in selectors:
-                btn = self.page.ele(s, timeout=1)
-                if btn and btn.link and btn.link != self.page.url:
-                    next_url = btn.link
-                    break
-            
-            if not next_url:
-                all_links = self.page.eles('tag:a')
-                for link in all_links:
-                    text = link.text.lower()
-                    if any(x in text for x in ['next', 'التالي', 'الفصل التالي']):
-                        if link.link and link.link != self.page.url:
-                            next_url = link.link
-                            break
+    def find_next(self):
+        """نظام البحث عن الفصل التالي (Architect Logic) سيدي"""
+        selectors = ['.next_page', 'a.next_page', 'a[rel="next"]', '.nav-next a', '.next-post']
+        for s in selectors:
+            btn = self.page.ele(s, timeout=1)
+            if btn and btn.link and btn.link != self.page.url:
+                return btn.link
 
-            return valid_links, next_url
-        except Exception as e:
-            print(f"🔥 Error during extraction: {e}")
-            return [], None
+        all_links = self.page.eles('tag:a')
+        for link in all_links:
+            text = link.text.lower()
+            if ('next' in text) or ('التالي' in text) or ('الفصل التالي' in text):
+                if link.link and link.link != self.page.url:
+                    return link.link
+        return None
+
+# --- محرك التنفيذ السحابي سيدي ---
 
 async def start_royal_mission():
     tasks = supabase_get_task()
@@ -109,11 +92,11 @@ async def start_royal_mission():
     
     task = tasks[0]
     task_id = task['id']
+    print(f"⚔️ بروتوكول المهندس V15.0 مفعل للهدف: {task['name']} سيدي.")
     
-    print(f"🚀 تم اختراق الهدف: {task['name']} سيدي.")
     supabase_update_task(task_id, {"status": "downloading"})
     
-    scraper = RoyalScraper()
+    architect = ManhwaArchitect()
     all_tokens = os.getenv("BOT_TOKENS").split(',')
     bot_index = task_id % len(all_tokens)
     
@@ -125,9 +108,18 @@ async def start_royal_mission():
     target_id = task['target_id']
 
     try:
+        # معالجة الفصول سيدي (بحد أقصى 5 فصول في الدورة الواحدة)
         for _ in range(5): 
-            images, next_url = scraper.get_data(curr_url)
-            if not images: break
+            architect.page.get(curr_url)
+            architect.page.scroll.to_bottom()
+            time.sleep(2)
+            
+            images = architect.extract_precise_images()
+            next_url = architect.find_next()
+
+            if not images:
+                print(f"⚠️ لم يتم العثور على صور في: {curr_url}")
+                break
 
             supabase_update_task(task_id, {"status": "uploading"})
             
@@ -136,7 +128,7 @@ async def start_royal_mission():
                 try:
                     sent = await client.send_file(int(os.getenv("TG_CHAT_ID")), img, force_document=True)
                     file_ids.append(str(pack_bot_file_id(sent.media.document)))
-                    await asyncio.sleep(0.8) # سرعة المهندس سيدي
+                    await asyncio.sleep(1) # تأخير لضمان استقرار التليجرام سيدي
                 except: continue
 
             if file_ids:
@@ -152,8 +144,8 @@ async def start_royal_mission():
                                  headers={"X-API-KEY": os.getenv("SITE_API_KEY")}, timeout=60)
                 
                 if r.status_code == 200:
+                    print(f"✅ تم غزو الفصل {new_ch} بنجاح سيدي!")
                     last_ch = new_ch
-                    print(f"✅ الفصل {new_ch} تم رفعه بنجاح سيدي!")
                     supabase_update_task(task_id, {
                         "last_chapter": new_ch,
                         "source_url": next_url if next_url else curr_url,
@@ -161,15 +153,17 @@ async def start_royal_mission():
                     })
                     if next_url: curr_url = next_url
                     else: break
-                else: break
+                else: 
+                    print(f"❌ فشل إرسال الفصل لـ Render: {r.status_code}")
+                    break
             else: break
             
     except Exception as e:
-        print(f"❌ تعطلت العملية سيدي: {e}")
+        print(f"🔥 خطأ فادح: {e} سيدي.")
         supabase_update_task(task_id, {"status": "error"})
     finally:
         await client.disconnect()
-        scraper.page.quit()
+        architect.page.quit()
 
 if __name__ == "__main__":
     asyncio.run(start_royal_mission())
