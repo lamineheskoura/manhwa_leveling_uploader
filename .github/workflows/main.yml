@@ -1,32 +1,32 @@
-name: SOVEREIGN EXECUTIONER SYSTEM
+name: SOVEREIGN EXECUTIONER REBORN
 
 on:
   schedule:
-    - cron: '*/30 * * * *' # يعمل كل 30 دقيقة سيدي
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 jobs:
   conquer:
     runs-on: ubuntu-latest
     steps:
-      - name: 🛡️ Checkout
+      - name: 🛡️ Checkout Repository
         uses: actions/checkout@v3
 
-      - name: 🐍 Python Setup
+      - name: 🐍 Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: 🌐 Install Google Chrome
+      - name: 🌐 Install Chrome & Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
+          sudo apt-get install -y google-chrome-stable libnss3 libatk-bridge2.0-0 libgtk-3-0 libgbm-dev
 
-      - name: 📦 Install Dependencies
+      - name: 📦 Install Requirements
         run: |
           pip install nodriver telethon requests
 
-      - name: ⚔️ Execute Mission
+      - name: ⚔️ Launch Mission
         env:
           SB_URL: ${{ secrets.SB_URL }}
           SB_KEY: ${{ secrets.SB_KEY }}
