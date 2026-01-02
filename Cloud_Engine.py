@@ -1,4 +1,4 @@
-# --- Professional Global Commenting Protocol: ROYAL GHOST ENGINE V16.0 (Phantom Display) سيدي ---
+# --- Professional Global Commenting Protocol: ROYAL GHOST ENGINE V16.5 (Linux Armored) سيدي ---
 import os
 import asyncio
 import requests
@@ -43,25 +43,48 @@ def supabase_update_task(task_id, payload):
 
 class ManhwaArchitect:
     def __init__(self):
-        # 💡 العبقرية هنا سيدي: لا نستخدم headless، بل نجعله يظن أنه مرئي
+        self.page = None
         self.co = ChromiumOptions()
-        # self.co.set_argument('--headless') <--- تم الحذف نهائياً سيدي
-        self.co.set_argument('--no-sandbox')
+        
+        # 🛡️ إعدادات "الدرع المصفح" لبيئة Linux سيدي
+        # هذه الأوامر ضرورية جداً لمنع انهيار كروم في السحاب
+        self.co.set_argument('--no-sandbox') 
         self.co.set_argument('--disable-gpu')
-        self.co.set_argument('--start-maximized') 
-        # انتحال شخصية متصفح حقيقي بالكامل
+        self.co.set_argument('--disable-dev-shm-usage') # حل مشكلة الذاكرة المشتركة
+        self.co.set_argument('--disable-setuid-sandbox')
+        self.co.set_argument('--window-size=1920,1080')
+        self.co.set_argument('--start-maximized')
+        
+        # تضليل الحماية
         self.co.set_user_agent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36')
         
+        # تعيين منفذ تلقائي لتجنب تعارض 9222
+        self.co.auto_port()
+
         try:
+            print("🔧 جاري تشغيل المتصفح مع إعدادات Linux المصفحة...")
             self.page = ChromiumPage(self.co)
+            print("✅ تم إقلاع المتصفح بنجاح!")
         except Exception as e:
-            print(f"⚠️ فشل تشغيل المتصفح: {e}")
+            print(f"⚠️ فشل أولي، جاري المحاولة بوضع Headless الجديد... الخطأ: {e}")
+            # خطة بديلة: العودة لوضع headless=new إذا فشلت الشاشة الوهمية
+            try:
+                self.co.set_argument('--headless=new')
+                self.page = ChromiumPage(self.co)
+                print("✅ تم الإقلاع بوضع Headless New.")
+            except Exception as e2:
+                print(f"🔥 فشل نهائي في تشغيل المتصفح: {e2}")
+                self.page = None
 
     def bypass_and_extract(self, url):
-        print(f"🕵️ الهجوم بالشاشة الشبحية على: {url}")
+        if not self.page:
+            print("❌ لا يوجد متصفح يعمل سيدي!")
+            return []
+
+        print(f"🕵️ الهجوم على: {url}")
         self.page.get(url)
         
-        # انتظار ذكي: Cloudflare سيرى شاشة كاملة وسيمررنا
+        # انتظار ذكي
         for i in range(15):
             if "Just a moment" not in self.page.title and "Cloudflare" not in self.page.title:
                 print("✅ تم خداع الحماية! نحن في الداخل.")
@@ -75,7 +98,6 @@ class ManhwaArchitect:
         time.sleep(2)
 
         links = []
-        # محددات شاملة سيدي
         selectors = ['img[src*="http"]', '.reading-content img', '.main-col img', 'div img']
         
         for s in selectors:
@@ -87,9 +109,12 @@ class ManhwaArchitect:
         
         return list(dict.fromkeys(links))
 
+    def quit(self):
+        if self.page:
+            self.page.quit()
+
 async def start_royal_mission():
     # 📺 تشغيل الشاشة الوهمية (Virtual Display)
-    # هذا يجعل GitHub يظن أن لديه شاشة 1920x1080
     display = Display(visible=0, size=(1920, 1080))
     display.start()
     print("🖥️ تم تفعيل الشاشة الشبحية بنجاح.")
@@ -119,6 +144,7 @@ async def start_royal_mission():
         except: continue
 
     if not client: 
+        print("🚨 فشل الاتصال بجميع البوتات.")
         display.stop()
         return
 
@@ -150,8 +176,9 @@ async def start_royal_mission():
                 # الحصول على الرابط التالي
                 next_url = None
                 try:
-                    next_ele = architect.page.ele('text:Next') or architect.page.ele('.next_page')
-                    if next_ele: next_url = next_ele.attr('href')
+                    if architect.page:
+                        next_ele = architect.page.ele('text:Next') or architect.page.ele('.next_page')
+                        if next_ele: next_url = next_ele.attr('href')
                 except: pass
 
                 supabase_update_task(task_id, {
@@ -171,7 +198,7 @@ async def start_royal_mission():
         supabase_update_task(task_id, {"status": "error"})
     finally:
         if client: await client.disconnect()
-        architect.page.quit()
+        if architect: architect.quit()
         display.stop() # إغلاق الشاشة الشبحية
 
 if __name__ == "__main__":
