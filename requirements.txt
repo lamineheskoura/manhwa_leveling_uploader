@@ -1,4 +1,4 @@
-# --- Professional Global Commenting Protocol: Royal Requirements v8.5 سيدي ---
+# --- Professional Global Commenting Protocol: Royal Requirements v8.6 [Clean Build] سيدي ---
 
 # مكتبات التعامل مع الويب وتجاوز الحماية
 DrissionPage==4.0.5.5
@@ -8,6 +8,4 @@ requests==2.31.0
 telethon==1.34.0
 supabase==2.3.0
 
-# مكتبات المساعدة والعمليات المتزامنة
-asyncio
-python-dotenv
+# ملاحظة سيدي: تم إزالة asyncio لأنها مدمجة في النظام تلقائياً

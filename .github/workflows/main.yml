@@ -23,7 +23,7 @@ jobs:
       - name: 🌐 تثبيت متصفح Google Chrome
         run: |
           sudo apt-get update
-          sudo apt-get install -null -y google-chrome-stable
+          sudo apt-get install -y google-chrome-stable
 
       - name: 📦 تثبيت المكتبات اللازمة
         run: |
