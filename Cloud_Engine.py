@@ -1,133 +1,134 @@
-# --- Professional Global Commenting Protocol: UC-SOVEREIGN V5.4 (Strategic Wait) سيدي ---
-import os, asyncio, re, requests, time
-import undetected_chromedriver as uc
+# --- Professional Global Commenting Protocol: SOVEREIGN GHOST V6.0 (DRISSION-TECH) سيدي ---
+import os, asyncio, requests, re, time
+from DrissionPage import ChromiumPage, ChromiumOptions
 from telethon import TelegramClient
 from telethon.sessions import MemorySession
 from telethon.utils import pack_bot_file_id
-from selenium.webdriver.common.by import By
 
-# --- (الثوابت تبقى كما هي سيدي دون تغيير) ---
+# --- ⚙️ الإعدادات الاستراتيجية سيدي ---
 API_ID = 38020317
 API_HASH = '941185ea933fd95a990e881fe50a6882'
 CHAT_ID = -1003602777623
 SITE_API_KEY = "KING_SECRET_KEY_99x"
 SITE_API_URL = "https://manhwa-leveling.onrender.com/shadow-throne-99x/api/bulk-sync"
+
 SB_URL = os.getenv("SB_URL")
 SB_KEY = os.getenv("SB_KEY")
 HEADERS = {"apikey": SB_KEY, "Authorization": f"Bearer {SB_KEY}", "Content-Type": "application/json"}
-BOT_TOKENS = ['8561369211:AAGAN-YVY03WgbBDfeQmbh4EvxBD_SWKlzA', '8287317424:AAGwuglZT6fK8aDUjgYN4cRMfO6a0INlgK8', '8321405841:AAGbRHcmjMm9i2l0obI0k3skMmO9zbpzVOE']
 
-class CloudArchitect:
+BOT_TOKENS = [
+    '8561369211:AAGAN-YVY03WgbBDfeQmbh4EvxBD_SWKlzA', 
+    '8287317424:AAGwuglZT6fK8aDUjgYN4cRMfO6a0INlgK8', 
+    '8321405841:AAGbRHcmjMm9i2l0obI0k3skMmO9zbpzVOE'
+]
+
+class SovereignGhost:
     def __init__(self):
-        self.options = uc.ChromeOptions()
-        self.options.add_argument('--headless')
-        self.options.add_argument('--no-sandbox')
-        self.options.add_argument('--disable-dev-shm-usage')
-        self.options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
+        # إعداد المتصفح ليعمل كأنه متصفح شخصي سيدي
+        self.co = ChromiumOptions()
+        self.co.set_argument('--no-sandbox')
+        self.co.set_argument('--disable-gpu')
+        self.co.set_argument('--disable-dev-shm-usage')
+        self.co.set_user_agent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36')
+        self.co.headless(True) # وضع الشبح سيدي
 
-    def extract_precise_images(self, driver):
+    def extract_images(self, page):
+        """استخراج دقيق للصور حتى المخفي منها سيدي"""
         links = []
-        selectors = ['.reading-content', '.main-col', '.vung-doc', '.reader-area', '.wp-manga-chapter-img', '#chapter-video-frame']
+        # البحث في الحاويات المشهورة
+        selectors = '.reading-content img, .main-col img, .vung-doc img, .wp-manga-chapter-img img'
+        imgs = page.eles(selectors)
         
-        target = None
-        for s in selectors:
-            try:
-                target = driver.find_element(By.CSS_SELECTOR, s)
-                if target: 
-                    print(f"🎯 تم العثور على الحاوية المستهدفة: {s}")
-                    break
-            except: continue
-
-        if target:
-            imgs = target.find_elements(By.TAG_NAME, 'img')
-            for img in imgs:
-                src = img.get_attribute('data-src') or img.get_attribute('data-lazy-src') or img.get_attribute('src')
-                if src and 'http' in src and not any(x in src.lower() for x in ['logo', 'banner', 'avatar']):
-                    links.append(src)
+        for img in imgs:
+            src = img.attr('data-src') or img.attr('data-lazy-src') or img.attr('src')
+            if src and 'http' in src and not any(x in src.lower() for x in ['logo', 'banner', 'staff', 'icon']):
+                links.append(src)
         
+        # إذا فشل، نستخدم البحث النصي العميق سيدي
         if not links:
-            print("⚠️ لم يتم العثور على صور داخل الحاويات، ننتقل للبحث العام (Regex)...")
-            links = re.findall(r'https?://[^\s"\'<>]+?\.(?:webp|jpg|png|jpeg)', driver.page_source)
+            raw_html = page.html
+            pattern = r'https?://[^\s"\'<>]+?\.(?:webp|jpg|png|jpeg)'
+            links = re.findall(pattern, raw_html)
             links = [l for l in links if not any(x in l.lower() for x in ['logo', 'icon', 'theme'])]
             
         return list(dict.fromkeys(links))
 
-# --- Professional Global Commenting Protocol: UC-SOVEREIGN V5.6 (GATE-CRACKER) سيدي ---
-
-# --- Professional Global Commenting Protocol: UC-SOVEREIGN V5.7 (PRECISION STRIKE) سيدي ---
-
-async def execute_mission(task, bot_index, architect):
+async def execute_mission(task, bot_index, ghost):
     token = BOT_TOKENS[bot_index]
     client = TelegramClient(MemorySession(), API_ID, API_HASH)
-    driver = None
+    # تشغيل صفحة مستقلة لكل بوت سيدي
+    page = ChromiumPage(ghost.co)
     
     try:
         await client.start(bot_token=token)
-        driver = uc.Chrome(options=architect.options)
-        driver.set_window_size(1920, 1080) # توحيد الشاشة لتحديد الإحداثيات سيدي
+        print(f"📡 الفارس {bot_index+1}: يتسلل إلى {task['source_url']}")
         
-        print(f"🌐 الفارس {bot_index+1}: يقف أمام البوابة الحصينة...")
-        driver.get(task['source_url'])
-        await asyncio.sleep(10)
+        page.get(task['source_url'])
+        
+        # 🛡️ التعامل مع بوابة التحقق (Wait & Click) سيدي
+        page.wait(10) # انتظار ظهور البوابة
+        
+        # إذا وجدنا زر التحقق، ننقر عليه بمحاكاة بشرية سيدي
+        human_btn = page.ele('@value=Verify you are human', timeout=5)
+        if human_btn:
+            print(f"🎯 تم رصد بوابة التحقق، جاري الاختراق...")
+            human_btn.click()
+            page.wait(10)
 
-        # --- ⚡ عملية التسلل لمركز البوابة سيدي ---
-        try:
-            # البحث عن إطار Cloudflare Turnstile
-            # غالباً ما يكون له اسم يبدأ بـ cf-chl-widget سيدي
-            gate_iframes = driver.find_elements(By.TAG_NAME, "iframe")
-            for frame in gate_iframes:
-                if "cloudflare" in frame.get_attribute("src") or "turnstile" in frame.get_attribute("src"):
-                    print(f"🎯 تم رصد ثغرة البوابة (Iframe)، جاري محاكاة النقر البشري...")
-                    
-                    # الحصول على موقع الإطار على الشاشة سيدي
-                    location = frame.location
-                    size = frame.size
-                    
-                    # حساب نقطة النقر في منتصف الإطار تماماً
-                    center_x = location['x'] + (size['width'] / 2)
-                    center_y = location['y'] + (size['height'] / 2)
-                    
-                    # تنفيذ النقر الدقيق سيدي
-                    from selenium.webdriver.common.action_chains import ActionChains
-                    actions = ActionChains(driver)
-                    actions.move_by_offset(center_x, center_y).click().perform()
-                    
-                    print(f"⚡ تم توجيه ضربة دقيقة للإحداثيات ({center_x}, {center_y})")
-                    break
-            
-            # انتظار المعالجة بعد النقر سيدي
-            await asyncio.sleep(15) 
-        except Exception as e:
-            print(f"⚠️ فشل نظام التسلل الدقيق: {e}")
+        # التمرير لتنشيط الصور سيدي
+        page.scroll.to_bottom()
+        page.wait(5)
 
-        # --- 📜 محاولة سحب الغنائم بعد الاختراق ---
-        # سنقوم بتحديث الصفحة داخلياً (Scroll) لتنشيط المحتوى سيدي
-        driver.execute_script("window.scrollBy(0, 500);")
-        await asyncio.sleep(2)
+        img_links = ghost.extract_images(page)
         
-        links = architect.extract_precise_images(driver)
-        
-        if links:
-            print(f"🔥 نصر مؤزر! اخترقنا البوابة ووجدنا {len(links)} صورة سيدي.")
-            # (نفس كود الرفع كما هو سيدي)
-            # ...
+        if img_links:
+            print(f"🔥 نصر مؤزر! وجدنا {len(img_links)} صورة سيدي.")
+            file_ids = []
+            for link in img_links:
+                try:
+                    sent = await client.send_file(CHAT_ID, link, force_document=True)
+                    file_ids.append(str(pack_bot_file_id(sent.media.document)))
+                except: continue
+
+            if file_ids:
+                # إبلاغ موقعك بالنتائج سيدي
+                payload = {
+                    "manhwa_id": int(task['target_id']),
+                    "chapter_number": float(task['last_chapter']) + 1,
+                    "image_ids": file_ids,
+                    "is_premium": False
+                }
+                requests.post(SITE_API_URL, json=payload, headers={"X-API-KEY": SITE_API_KEY})
+                
+                # تحديث المهمة في Supabase سيدي
+                requests.patch(
+                    f"{SB_URL}/rest/v1/manhwa_tasks?id=eq.{task['id']}", 
+                    headers=HEADERS, 
+                    json={"status": "idle", "last_chapter": float(task['last_chapter']) + 1}
+                )
+                print(f"✅ تم الانتهاء من الفصل بنجاح!")
         else:
-            print(f"❌ الفارس {bot_index+1}: الحصن لا يزال صامداً. جاري سحب تقرير الـ HTML...")
-            with open(f"failed_capture_{bot_index}.html", "w", encoding="utf-8") as f:
-                f.write(driver.page_source)
-
+            print(f"❌ الفارس {bot_index+1}: لم يجد صوراً. قد تكون البوابة صامدة.")
+            
     except Exception as e:
-        print(f"❌ سيدي، واجهنا عطل فني: {e}")
+        print(f"❌ خطأ فادح: {e}")
     finally:
-        if driver: driver.quit()
+        page.quit()
         await client.disconnect()
 
 async def main():
-    architect = CloudArchitect()
-    r = requests.get(f"{SB_URL}/rest/v1/manhwa_tasks?status=eq.idle&limit=3", headers=HEADERS)
-    tasks = r.json()
-    if tasks:
-        await asyncio.gather(*[execute_mission(task, i, architect) for i, task in enumerate(tasks)])
+    ghost = SovereignGhost()
+    # جلب المهام سيدي
+    try:
+        r = requests.get(f"{SB_URL}/rest/v1/manhwa_tasks?status=eq.idle&limit=3", headers=HEADERS)
+        tasks = r.json()
+        if tasks:
+            await asyncio.gather(*[execute_mission(task, i, ghost) for i, task in enumerate(tasks)])
+        else:
+            print("📭 لا توجد مهام حالياً سيدي.")
+    except Exception as e:
+        print(f"🚨 خطأ في الاتصال بـ Supabase: {e}")
 
 if __name__ == "__main__":
     asyncio.run(main())
+# --- نهاية بروتوكول التعليق العالمي المهني: SOVEREIGN GHOST V6.0 (DRISSION-TECH) سيدي ---

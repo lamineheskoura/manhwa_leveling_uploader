@@ -1,47 +1,46 @@
-name: UC-SOVEREIGN CLOUD ENGINE V5.2
+name: GHOST-DRISSION ENGINE V6.0
 
 on:
   schedule:
-    - cron: '*/30 * * * *'
-  workflow_dispatch:
+    - cron: '*/30 * * * *' # انطلاق الهجوم كل 30 دقيقة سيدي
+  workflow_dispatch: # للبدء اليدوي عند الحاجة
 
 jobs:
-  conquer:
+  deployment:
     runs-on: ubuntu-latest
-    timeout-minutes: 25 
+    timeout-minutes: 25
 
     steps:
       - name: 🛡️ Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 🐍 Setup Python 3.10
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
           cache: 'pip'
 
-      - name: 🌐 Install Google Chrome & Correct Dependencies
+      - name: 🌐 Install Chromium & Dependencies
         run: |
           sudo apt-get update
-          # سيدي، قمنا بتحديث أسماء المكتبات لتتوافق مع Ubuntu 24.04 الجديد
-          sudo apt-get install -y wget fonts-liberation libappindicator3-1 libasound2t64 libatk-bridge2.0-0 libnspr4 libnss3 libx11-xcb1 libxtst6 xdg-utils libgbm1
-          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo dpkg -i google-chrome-stable_current_amd64.deb
-          sudo apt-get install -f -y
+          # تثبيت المتصفح والمكتبات الضرورية لعمل DrissionPage سيدي
+          sudo apt-get install -y chromium-browser libnss3 libgbm1 libasound2t64 xdg-utils
 
-      - name: 📦 Install Python Royal Dependencies
+      - name: 📦 Install Ghost Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install undetected-chromedriver==3.5.5 selenium==4.15.2 telethon requests
+          # تثبيت المكتبات الملكية
+          pip install DrissionPage telethon requests
 
-      - name: ⚔️ Launch UC Sovereign Mission
+      - name: ⚔️ Launch Sovereign Ghost Mission
         env:
+          # الأسرار العسكرية سيدي
           SB_URL: ${{ secrets.SB_URL }}
           SB_KEY: ${{ secrets.SB_KEY }}
           PYTHONUNBUFFERED: 1
         run: python Cloud_Engine.py
 
-      - name: 📋 Report Status
+      - name: 📋 Mission Summary
         if: always()
         run: |
-          echo "تمت محاولة الغزو سيدي. الحالة: ${{ job.status }}"
+          echo "انتهت المهمة سيدي القائد. الحالة: ${{ job.status }}"
